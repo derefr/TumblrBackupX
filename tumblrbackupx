@@ -1,0 +1,33 @@
+#!/usr/bin/env ruby
+
+require 'rest-client'
+require 'json'
+
+api_key = 'kNm79EAUkkRkiF6JJfah2Spo4WXsw8ly0MeWhErxrENO9G9CAi'
+
+unless site_name = ARGV.shift
+  puts "usage: #{$0} site-name.tumblr.com"
+  exit 1
+end
+
+initial_response = JSON.parse( RestClient.get("http://api.tumblr.com/v2/blog/#{site_name}/posts?api_key=#{api_key}&offset=0&limit=1") )
+
+blog_details = initial_response['response']['blog']
+post_count = initial_response['response']['total_posts']
+posts = []
+
+0.upto(post_count) do |i|
+  next unless (i % 20) == 0
+
+  STDERR.print "Getting posts #{i + 1}:#{i + 21}... "
+  response = JSON.parse( RestClient.get("http://api.tumblr.com/v2/blog/#{site_name}/posts?api_key=#{api_key}&offset=#{i}&limit=20") )
+  posts << response['response']['posts']
+  STDERR.puts "retrieved."
+
+  sleep 0.3
+end
+
+posts = posts.flatten
+STDERR.puts "Got #{posts.length} posts."
+
+STDOUT.puts( {'blog' => blog_details, 'posts' => posts}.to_json )
