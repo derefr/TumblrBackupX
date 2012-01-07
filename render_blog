@@ -88,7 +88,7 @@ FileUtils.mkdir_p(Blog['name'] + '/images')
 running_in_directory = File.dirname( File.expand_path(__FILE__) )
 ResourceFiles.each do |file|
   FileUtils.cp(running_in_directory + '/' + file, Blog['name'] + '/' + file)
-  FileUtils.touch(Blog[name] + '/customized_' + file)
+  FileUtils.touch(Blog['name'] + '/customized_' + file)
 end
 
 
