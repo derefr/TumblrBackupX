@@ -84,6 +84,7 @@ end
 
 FileUtils.mkdir_p(Blog['name'])
 FileUtils.mkdir_p(Blog['name'] + '/images')
+FileUtils.mkdir_p(Blog['name'] + '/speakers')
 
 running_in_directory = File.dirname( File.expand_path(__FILE__) )
 ResourceFiles.each do |file|
@@ -150,8 +151,7 @@ __END__
                   - last_speaker = speaker
                   - is_reply = (not is_reply)
                 %blockquote.post-dialogue-line{:class => ['speaker-' + speaker, is_reply ? 'post-dialogue-reply' : nil].compact}
-                  - if File.exist?(Blog['name'] + '/speaker-' + speaker + '.png')
-                    %img.speaker-avatar{:src => '../speaker-' + speaker + '.png'}
+                  %img.speaker-avatar{:src => '../speakers/' + speaker + '.png'}
                   %p= line['phrase']
                   .floatclear
           - if post['type'] == 'photo'
