@@ -27,15 +27,13 @@ PhotoCache = {}
 
 Posts.each do |po|
   po['page'] = (po['tags'] & ChapterTags).first
-  po['permalink'] = po['page'] + '/#' + po['index'].to_s
+  po['permalink'] = po['page'] + '/#post-' + po['index'].to_s
   Pages[po['page']] << po
   PostsByTumblrId[po['id']] = po
 end
 
 LocalLinkPattern = Regexp.new("['\"]" + Blog['url'].gsub('/', '\\/').gsub('.', '\\.') + "[^'\"]+['\"]")
 ImageSrcPattern = /src=['\"][^'\"]+['\"]/
-
-template = DATA.read
 
 class HelperScope
   def replace_links(html)
@@ -46,7 +44,7 @@ class HelperScope
 
       case link_parts.first
       when 'post'
-        new_link = PostsByTumblrId[link_parts[1].to_i]['permalink']
+        new_link = '../' + PostsByTumblrId[link_parts[1].to_i]['permalink']
       when 'tagged'
         new_link = '../' + link_parts[1].split('?')[0] + '/'
       end
@@ -98,104 +96,37 @@ if File.exist?(Blog['name'] + '/photo_cache')
   PhotoCache.update(JSON.parse(File.read(Blog['name'] + '/photo_cache')))
 end
 
-def capitalize_words(words)
+def tag_to_name(tag_str)
+  words = tag_str.split('-')
   stop_words = %w(of and or the a an is are)
   new_words = words.map{ |w| stop_words.include?(w) ? w : w.capitalize }
   new_words.unshift(new_words.shift.capitalize)
-  new_words
+  new_words.join(' ')
 end
+
+ChapterPageTemplate = Haml::Engine.new(File.read(running_in_directory + '/chapter.haml'), :format => :html5)
+LandingPageTemplate = Haml::Engine.new(File.read(running_in_directory + '/landing.haml'), :format => :html5)
 
 Pages.each do |page_name, posts|
   FileUtils.mkdir_p(Blog['name'] + '/' + page_name)
 
   File.open(Blog['name'] + '/' + page_name + '/index.html', 'w') do |f|
-    f.write( Haml::Engine.new(template, :format => :html5).render(HelperScope.new,
-      :page_name => capitalize_words(page_name.split('-')).join(' '),
+    f.write( ChapterPageTemplate.render(HelperScope.new,
+      :page_name => tag_to_name(page_name),
       :posts => posts
     ))
   end
 end
 
+File.open(Blog['name'] + '/index.html', 'w') do |f|
+  f.write( LandingPageTemplate.render(HelperScope.new,
+    :latest_chapter_name => tag_to_name(ChapterTags.last),
+    :latest_post_number => Pages[ChapterTags.last].last['index'],
+    :latest_post_permalink => ChapterTags.last + '/#post-' + Pages[ChapterTags.last].last['index'].to_s,
+    :first_chapter_permalink => ChapterTags.first + '/',
+  ))
+end
+
 unless PhotoCache.empty?
   File.open(Blog['name'] + '/photo_cache', 'w'){ |f| f.write(PhotoCache.to_json) }
 end
-
-__END__
-!!! 5
-%html
-  %head
-    %meta{:charset => 'utf-8'}
-    %title== #{Blog['title']} - #{page_name}
-    %link{:rel => 'Stylesheet', :href => '../blog.css', :type => 'text/css'}
-    %link{:rel => 'Stylesheet', :href => '../customized_blog.css', :type => 'text/css'}
-  %body
-    %header
-      %table
-        %tr
-          %td
-            %h1
-              = Blog['title']
-          %td{:rowspan => 2}
-            %img.avatar{:src => '../avatar.png'}
-        %tr
-          %td
-            %h2
-              = page_name
-      .toggle-mailbag-blob
-        %a.toggle-mailbag-link{:href => '#'} Show only plot-relevant posts
-  
-    - posts.each do |post|
-      %article.post{:class => ['post-' + post['type']] + post['tags'].map{ |t| 'post-tagged-' + t }, :id => 'post-' + post['index'].to_s}
-        .post-inner-wrapper
-          %a.post-permalink{:href => '#post-' + post['index'].to_s} &#x2605;
-          - if post['type'] == 'text'
-            - if post['title']
-              %header
-                %h3= post['title']
-            .post-content
-              = replace_links(post['body'])
-          - if post['type'] == 'chat'
-            - if post['title']
-              %header
-                %h3= post['title']
-            .post-dialogue
-              - last_speaker = nil
-              - is_reply = true
-              - post['dialogue'].each do |line|
-                - speaker = line['name'].downcase.tr(' ', '-')
-                - if (is_new_speaker = (speaker != last_speaker))
-                  - last_speaker = speaker
-                  - is_reply = (not is_reply)
-                %blockquote.post-dialogue-line{:class => ['speaker-' + speaker, is_reply ? 'post-dialogue-reply' : nil].compact}
-                  %img.speaker-avatar{:src => '../speakers/' + speaker + '.png'}
-                  %p= line['phrase']
-                  .floatclear
-          - if post['type'] == 'photo'
-            .post-photoset
-              - post['photos'].each do |photo|
-                .post-photo
-                  %img{:src => download_image(photo['original_size']['url'])}
-                  - if photo['caption'] and not photo['caption'].strip.empty?
-                    %p.photo-caption= photo['caption']
-            - if post['caption'] and not post['caption'].strip.empty?
-              .post-caption.post-content
-                = replace_links(post['caption'])
-          - if post['type'] == 'answer'
-            .post-question-block
-              - if post['asking_url']
-                %p
-                  %a{:href => post['asking_url']}= post['asking_name']
-                  asked:
-              %blockquote.post-question
-                %p= post['question']
-            .post-answer.post-content
-              = replace_links(post['answer'])
-
-          %ul.post-tags
-            - (post['tags'] - ChapterTags - ['mailbag']).each do |tag|
-              %li.post-tag= tag
-    .final-spacer
-
-    %script{:src => 'http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js'}
-    %script{:src => '../blog.js'}
-    %script{:src => '../customized_blog.js'}

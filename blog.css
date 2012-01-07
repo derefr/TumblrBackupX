@@ -88,6 +88,12 @@ body > header {
   padding: 10px 30px;
 }
 
+body#landing-page > header {
+  margin-top: 8em;
+  padding-top: 2em;
+  padding-bottom: 2em;
+}
+
 body > header table {
   width: 100%;
 }
@@ -335,4 +341,31 @@ h3 {
   color: #fff;
   text-decoration: underline;
   text-shadow: 2px 2px 2px rgba(0, 0, 0, 0.4);
+}
+
+#landing-read-links {
+  margin-top: 1em;
+}
+
+.landing-read-blob {
+  display: inline-block;
+  background: rgba(0, 0, 0, 0.15);
+  -moz-border-radius: 3px;
+  -webkit-border-radius: 3px;
+  border-radius: 3px;
+  padding: 1em 1.7em;
+  font-size: 120%;
+  color: #fff;
+  box-shadow: -1px -1px 0px rgba(128, 128, 128, 0.4);
+  text-shadow: 2px 2px 2px rgba(0, 0, 0, 0.4);
+  letter-spacing: 1px;
+}
+
+.landing-read-blob:hover {
+  background: rgba(0, 0, 0, 0.3);
+}
+
+.landing-read-blob-subcaption {
+  margin-top: 0.6em;
+  font-size: 80%;
 }

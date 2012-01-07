@@ -1,0 +1,28 @@
+!!! 5
+%html
+  %head
+    %meta{:charset => 'utf-8'}
+    %title== #{Blog['title']}
+    %link{:rel => 'Stylesheet', :href => 'blog.css', :type => 'text/css'}
+    %link{:rel => 'Stylesheet', :href => 'customized_blog.css', :type => 'text/css'}
+  %body#landing-page
+    %header
+      %table
+        %tr
+          %td
+            %h1
+              = Blog['title']
+          %td
+            %img.avatar{:src => 'avatar.png'}
+      %table#landing-read-links
+        %tr
+          %td
+            %a.landing-read-blob{:href => latest_post_permalink}
+              Read the latest post
+              %br
+              .landing-read-blob-subcaption
+                = latest_chapter_name
+                == ##{latest_post_number}
+          %td
+            %a.landing-read-blob{:href => first_chapter_permalink}
+              Start at the beginning
