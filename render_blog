@@ -56,29 +56,31 @@ class HelperScope
   
     html = html.gsub(ImageSrcPattern) do |photo_uri|
       photo_uri = photo_uri[5..-2]
-      next( 'src="' + PhotoCache[photo_uri] + '"' ) if PhotoCache.has_key?(photo_uri)
-
-      photo_ext = photo_uri.split('/').last.split('.').last.downcase
-      unless %w(jpg jpeg png gif).include?(photo_ext)
-        photo_ext = "png"
-      end
-
-      begin
-        photo_data = RestClient.get(photo_uri)
-        puts "Retrieving #{photo_uri}..."
-        photo_digest = Digest::MD5.hexdigest(photo_data)
-        photo_path = Blog['name'] + "/images/" + photo_digest + '.' + photo_ext
-        photo_new_uri = "../images/" + photo_digest + '.' + photo_ext
-        File.open(photo_path, 'wb'){ |f| f.write(photo_data) }
-        PhotoCache[photo_uri] = photo_new_uri
-      rescue
-        PhotoCache[photo_uri] = photo_uri
-      end
-      
-      'src="' + PhotoCache[photo_uri] + '"'
+      'src="' + download_image(photo_uri) + '"'
     end
     
     html
+  end
+  
+  def download_image(photo_uri)
+    return PhotoCache[photo_uri] if PhotoCache.has_key?(photo_uri)
+    
+    photo_ext = photo_uri.split('/').last.split('.').last.downcase
+    unless %w(jpg jpeg png gif).include?(photo_ext)
+      photo_ext = "png"
+    end
+
+    begin
+      photo_data = RestClient.get(photo_uri)
+      puts "Retrieving #{photo_uri}..."
+      photo_digest = Digest::MD5.hexdigest(photo_data)
+      photo_path = Blog['name'] + "/images/" + photo_digest + '.' + photo_ext
+      photo_new_uri = "../images/" + photo_digest + '.' + photo_ext
+      File.open(photo_path, 'wb'){ |f| f.write(photo_data) }
+      PhotoCache[photo_uri] = photo_new_uri
+    rescue
+      PhotoCache[photo_uri] = photo_uri
+    end
   end
 end
 
@@ -92,16 +94,30 @@ ResourceFiles.each do |file|
   FileUtils.touch(Blog['name'] + '/customized_' + file)
 end
 
+if File.exist?(Blog['name'] + '/photo_cache')
+  PhotoCache.update(JSON.parse(File.read(Blog['name'] + '/photo_cache')))
+end
+
+def capitalize_words(words)
+  stop_words = %w(of and or the a an is are)
+  new_words = words.map{ |w| stop_words.include?(w) ? w : w.capitalize }
+  new_words.unshift(new_words.shift.capitalize)
+  new_words
+end
 
 Pages.each do |page_name, posts|
   FileUtils.mkdir_p(Blog['name'] + '/' + page_name)
 
   File.open(Blog['name'] + '/' + page_name + '/index.html', 'w') do |f|
     f.write( Haml::Engine.new(template, :format => :html5).render(HelperScope.new,
-      :page_name => page_name,
+      :page_name => capitalize_words(page_name.split('-')).join(' '),
       :posts => posts
     ))
   end
+end
+
+unless PhotoCache.empty?
+  File.open(Blog['name'] + '/photo_cache', 'w'){ |f| f.write(PhotoCache.to_json) }
 end
 
 __END__
@@ -109,7 +125,7 @@ __END__
 %html
   %head
     %meta{:charset => 'utf-8'}
-    %title== #{Blog['title']} - ##{page_name}
+    %title== #{Blog['title']} - #{page_name}
     %link{:rel => 'Stylesheet', :href => '../blog.css', :type => 'text/css'}
     %link{:rel => 'Stylesheet', :href => '../customized_blog.css', :type => 'text/css'}
   %body
@@ -124,7 +140,7 @@ __END__
         %tr
           %td
             %h2
-              = page_name.tr('-', ' ')
+              = page_name
       .toggle-mailbag-blob
         %a.toggle-mailbag-link{:href => '#'} Show only plot-relevant posts
   
@@ -158,7 +174,7 @@ __END__
             .post-photoset
               - post['photos'].each do |photo|
                 .post-photo
-                  %img{:src => photo['original_size']['url']}
+                  %img{:src => download_image(photo['original_size']['url'])}
                   - if photo['caption'] and not photo['caption'].strip.empty?
                     %p.photo-caption= photo['caption']
             - if post['caption'] and not post['caption'].strip.empty?
