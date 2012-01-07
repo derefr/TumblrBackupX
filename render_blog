@@ -87,9 +87,8 @@ FileUtils.mkdir_p(Blog['name'] + '/images')
 
 running_in_directory = File.dirname( File.expand_path(__FILE__) )
 ResourceFiles.each do |file|
-  unless(File.exist?(Blog['name'] + '/' + file))
-    FileUtils.cp(running_in_directory + '/' + file, Blog['name'] + '/' + file)
-  end
+  FileUtils.cp(running_in_directory + '/' + file, Blog['name'] + '/' + file)
+  FileUtils.touch(Blog[name] + '/customized_' + file)
 end
 
 
@@ -111,6 +110,7 @@ __END__
     %meta{:charset => 'utf-8'}
     %title== #{Blog['title']} - ##{page_name}
     %link{:rel => 'Stylesheet', :href => '../blog.css', :type => 'text/css'}
+    %link{:rel => 'Stylesheet', :href => '../customized_blog.css', :type => 'text/css'}
   %body
     %header
       %table
@@ -182,3 +182,4 @@ __END__
 
     %script{:src => 'http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js'}
     %script{:src => '../blog.js'}
+    %script{:src => '../customized_blog.js'}
