@@ -1,0 +1,338 @@
+html, body, div, span, h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code, del, dfn, em, img, ins,
+kbd, q, s, samp, small, strike, strong, tt, var, dl, dt,
+dd, ol, ul, li, fieldset, form, input, textarea, label, legend, table, caption,
+tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, figcaption, figure,
+footer, header, hgroup, menu, nav, section {
+    margin: 0; padding: 0;
+    border: 0; outline: 0;
+    font-weight: inherit; font-style: inherit; font-family: inherit;
+    line-height: 1;
+    text-decoration: none;
+    vertical-align: baseline;
+}
+ 
+img, input, select { vertical-align: middle; }
+ 
+ol, ul { list-style: none; }
+ 
+a,
+label,
+input[type=button],
+input[type=submit],
+button { cursor: pointer; }
+ 
+input, select, textarea { font-family: inherit; }
+textarea { overflow: auto; } /* prevents scrollbar from showing up when unneeded in IE */
+ 
+table {
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+ 
+caption, th, td { text-align: left; font-weight: normal; }
+ 
+h1, h2, h3, h4, h5, h6 { font-weight: normal; }
+ 
+i, em { font-style: italic; }
+b, strong { font-weight: bold; }
+ 
+q:lang(en) { quotes: '&#8220;' '&#8221;' '&#8216;' '&#8217;'; }
+ 
+article, aside, canvas, details, figcaption, figure,
+footer, header, hgroup, menu, nav, section { display: block; }
+ 
+del { text-decoration: line-through; }
+ 
+abbr[title], dfn[title] {
+    border-bottom: 1px dotted;
+    cursor: help;
+}
+
+.floatclear {
+  clear: both;
+}
+
+
+
+
+
+
+
+
+
+
+body {
+  background: #eee;
+  font-family: sans-serif;
+}
+
+p {
+  line-height: 140%;
+}
+
+.post-content {
+  padding: 0 50px;
+}
+
+.post-content p {
+  margin: 1em 0;
+}
+
+body > header {
+  width: 740px;
+  margin: 0 auto;
+  text-align: center;
+  background: rgba(255, 255, 255, 0.8);
+  padding: 10px 30px;
+}
+
+body > header table {
+  width: 100%;
+}
+
+body > header td {
+  vertical-align: middle;
+  text-align: center;
+}
+
+h1 {
+  text-align: left;
+  color: #c64;
+  font-size: 400%;
+  letter-spacing: 3px;
+  font-family: Helvetica;
+  font-weight: bold;
+  text-shadow: -1px -1px 1px #fc8;
+}
+
+body > header img.avatar {
+  border: 1px solid #ccc;
+  padding: 2px;
+  width: 103px;
+  height: 103px;
+}
+
+h2 {
+  font-size: 170%;
+  color: #777;
+  font-family: Helvetica;
+  font-weight: bold;
+  text-align: left;
+}
+
+.post {
+  width: 700px;
+  margin: 0 auto;
+  margin-top: 5em;
+  text-align: center;
+  position: relative;
+}
+
+.post-question-block {
+  width: 620px;
+  margin: 0 auto;
+  background-color: #eee;
+  -webkit-border-radius: 15px;
+  -moz-border-radius: 15px;
+  border-radius: 15px;
+  padding: 0.5em 1em;
+}
+
+.post-content blockquote {
+  border-left: 3px solid #ccc;
+  margin-left: 1em;
+  padding: 0 0.5em;
+}
+
+.post-content ul {
+  list-style-type: circle;
+}
+
+.post-content ol {
+  list-style-type: decimal;
+}
+
+.post-content ul, .post-content ol {
+  margin-left: 2.5em;
+}
+
+.post-content li {
+  line-height: 140%;
+  margin: 1em 0;
+}
+
+blockquote p:first-child {
+  margin-top: 0;
+}
+
+blockquote p:last-child {
+  margin-bottom: 0;
+}
+
+blockquote {
+  padding: 0.5em;
+}
+
+.post-tags {
+  text-align: right;
+}
+
+.post-tag {
+  display: inline;
+  color: #00a;
+  margin-left: 0.5em;
+}
+
+.post header {
+  width: 640px;
+  margin: 0 auto;
+  padding: 0.5em 0;
+}
+
+h3 {
+  font-size: 175%;
+  letter-spacing: 1px;
+}
+
+.post-tag:before {
+  content: "#";
+}
+
+.post-inner-wrapper {
+  width: 100%;
+  background-color: #fff;
+  padding: 10px;
+  text-align: left;
+  box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.3);
+}
+
+.post-photo .post-inner-wrapper {
+  width: auto;
+  display: inline-block;
+}
+
+.post-chat .post-inner-wrapper {
+  background: rgba(255, 255, 255, 0.4);
+  box-shadow: none;
+}
+
+.post-content img {
+  display: block;
+  margin: 0 auto;
+  max-width: 550px;
+}
+
+.post-dialogue-line {
+  width: 600px;
+  margin-left: 0;
+  margin-right: 60px;
+  background-color: #fff;
+  -webkit-border-radius: 15px;
+  -moz-border-radius: 15px;
+  border-radius: 15px;
+  padding: 0.5em 1em;
+  margin: 1.5em 0;
+  box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.3);
+}
+
+.post-dialogue-line .speaker-avatar {
+  float: left;
+  margin-left: 0;
+  margin-right: 1em;
+  border: 1px solid #888;
+  padding: 1px;
+  background: rgba(255, 255, 255, 0.7);
+}
+
+.post-dialogue-line.post-dialogue-reply {
+  margin-left: 60px;
+  margin-right: 0;
+}
+
+.post-dialogue-line.post-dialogue-reply .speaker-avatar {
+  float: right;
+  margin-right: 0;
+  margin-left: 1em;
+}
+
+.post-dialogue-line p {
+  font-size: 120%;
+  line-height: 160%;
+  color: #444;
+}
+
+.post-dialogue-line:first-child {
+  margin-top: 0;
+}
+
+.post-dialogue-line:last-child {
+  margin-bottom: 0;
+}
+
+.post-tagged-mailbag:before {
+  color: #fff;
+  font-size: 96px;
+  display: block;
+  float: left;
+  position: absolute;
+  left: -96px;
+  content: "\2709";
+  text-shadow: 2px 2px 2px rgba(0, 0, 0, 0.5);
+}
+
+.post-permalink {
+  display: none;
+  
+  color: #ee8;
+  background: rgba(128, 0, 0, 0.7);
+  font-size: 32px;
+  padding: 16px 12px;
+  float: right;
+  position: absolute;
+  top: 0;
+  right: 8px;
+  -webkit-border-bottom-right-radius: 20px;
+  -webkit-border-bottom-left-radius: 20px;
+  -moz-border-radius-bottomright: 20px;
+  -moz-border-radius-bottomleft: 20px;
+  border-bottom-right-radius: 20px;
+  border-bottom-left-radius: 20px;
+  text-shadow: 2px 2px 2px rgba(0, 0, 0, 0.5);
+  cursor: pointer;
+  
+  opacity: 0.2;
+}
+
+.post-inner-wrapper:hover .post-permalink {
+  display: block;
+}
+
+.post-permalink:hover {
+  opacity: 1.0;
+}
+
+.final-spacer {
+  clear: both;
+  display: block;
+  margin-top: 64px;
+}
+
+.toggle-mailbag-blob {
+  margin-top: 1em;
+}
+
+.toggle-mailbag-link {
+  display: inline-block;
+  background: rgba(0, 0, 0, 0.15);
+  -moz-border-radius: 3px;
+  -webkit-border-radius: 3px;
+  border-radius: 3px;
+  padding: 0.2em 0.5em;
+  padding-bottom: 0.5em;
+  font-size: 120%;
+  color: #fff;
+  text-decoration: underline;
+  text-shadow: 2px 2px 2px rgba(0, 0, 0, 0.4);
+}
